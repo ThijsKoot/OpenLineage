@@ -452,7 +452,7 @@ func NewJobType(
 ) *JobType {
         return &JobType{
                 Producer: "openlineage-go",
-                SchemaURL: "https://openlineage.io/spec/facets/2-0-2/JobTypeJobFacet.json",
+                SchemaURL: "https://openlineage.io/spec/facets/2-0-3/JobTypeJobFacet.json",
                 Integration: integration,
                 ProcessingType: processingType,
         }

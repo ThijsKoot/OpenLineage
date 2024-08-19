@@ -156,8 +156,8 @@ type JobType struct {
 	Producer       string  `json:"_producer"`          // URI identifying the producer of this metadata. For example this could be a git url with a; given tag or sha
 	SchemaURL      string  `json:"_schemaURL"`         // The JSON Pointer (https://tools.ietf.org/html/rfc6901) URL to the corresponding version; of the schema definition for this facet
 	Deleted        *bool   `json:"_deleted,omitempty"` // set to true to delete a facet
-	Integration    string  `json:"integration"`        // OpenLineage integration type of this job: SPARK|DBT|AIRFLOW|FLINK
-	JobType        *string `json:"jobType,omitempty"`  // Run type like: QUERY|COMMAND|DAG|TASK|JOB|MODEL
+	Integration    string  `json:"integration"`        // OpenLineage integration type of this job: for example SPARK|DBT|AIRFLOW|FLINK
+	JobType        *string `json:"jobType,omitempty"`  // Run type, for example: QUERY|COMMAND|DAG|TASK|JOB|MODEL. This is an integration-specific; field.
 	ProcessingType string  `json:"processingType"`     // Job processing type like: BATCH or STREAMING
 }
 
