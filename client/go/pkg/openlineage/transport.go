@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	// "github.com/OpenLineage/openlineage/client/go/pkg/openlineage"
+	// "github.com/ThijsKoot/openlineage/client/go/pkg/openlineage"
 	"github.com/tidwall/pretty"
 )
 

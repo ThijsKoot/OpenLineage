@@ -1,4 +1,4 @@
-module github.com/OpenLineage/openlineage/client/go
+module github.com/ThijsKoot/openlineage/client/go
 
 go 1.22.4
 
