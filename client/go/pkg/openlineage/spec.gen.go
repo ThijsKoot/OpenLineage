@@ -10,7 +10,7 @@ type Event struct {
 	Inputs    []InputElement  `json:"inputs,omitempty"`    // The set of **input** datasets.
 	Job       *Job            `json:"job,omitempty"`
 	Outputs   []OutputElement `json:"outputs,omitempty"` // The set of **output** datasets.
-	Run       *Run            `json:"run,omitempty"`
+	Run       *RunInfo        `json:"run,omitempty"`
 	Dataset   *Dataset        `json:"dataset,omitempty"`
 }
 
@@ -73,7 +73,7 @@ type OutputElement struct {
 // URI identifying the producer of this metadata. For example this could be a git url with a; given tag or sha
 // The JSON Pointer (https://tools.ietf.org/html/rfc6901) URL to the corresponding version; of the schema definition for this facet
 
-type Run struct {
+type RunInfo struct {
 	Facets *facets.RunFacets `json:"facets,omitempty"` // The run facets.
 	RunID  string            `json:"runId"`            // The globally unique ID of the run associated with the job.
 }

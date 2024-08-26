@@ -18,10 +18,6 @@ type Transport interface {
 	Emit(ctx context.Context, event any) error
 }
 
-type Emittable interface {
-	AsEmittable() any
-}
-
 type TransportType string
 
 type Config struct {

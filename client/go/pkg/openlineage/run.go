@@ -12,7 +12,7 @@ type Eventtypes interface {
 }
 
 type RunEvent struct {
-	Run Run
+	Run RunInfo
 	Job Job
 
 	EventType EventType
@@ -56,7 +56,7 @@ func NewNamespacedRunEvent(
 			SchemaURL: schemaURL,
 			EventTime: time.Now().Format(time.RFC3339),
 		},
-		Run: Run{
+		Run: RunInfo{
 			RunID: runID.String(),
 		},
 		EventType: eventType,

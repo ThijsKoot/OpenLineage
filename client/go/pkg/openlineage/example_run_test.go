@@ -9,7 +9,7 @@ import (
 	"github.com/ThijsKoot/openlineage/client/go/pkg/transport"
 )
 
-func ExampleRunContext() {
+func ExampleRun() {
 	ctx := context.Background()
 
 	cfg := ol.ClientConfig{
@@ -25,13 +25,11 @@ func ExampleRunContext() {
 		slog.Error("ol.NewClient failed", "error", err)
 	}
 
-	ctx, runCtx := client.NewRunContext(ctx, "ingest")
-	defer runCtx.Finish()
-
-	runCtx.Event(ol.EventTypeStart).Emit()
+	ctx, run := client.StartRun(ctx, "ingest")
+	defer run.Finish()
 
 	if err := ChildFunction(ctx); err != nil {
-		runCtx.RecordError(err)
+		run.RecordError(err)
 
 		slog.Warn("child function failed", "error", err)
 	}
@@ -39,12 +37,13 @@ func ExampleRunContext() {
 }
 
 func ChildFunction(ctx context.Context) error {
-	_, childRun := ol.RunContextFromContext(ctx).Child(ctx, "child")
+	parent := ol.RunFromContext(ctx)
+	_, childRun := parent.StartChild(ctx, "child")
 	defer childRun.Finish()
 
-	childRun.Event(ol.EventTypeStart).Emit()
-
 	if err := DoWork(); err != nil {
+		// Record the error in this run.
+		// Finish() will emit a FAIL event.
 		childRun.RecordError(err)
 
 		return err

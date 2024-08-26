@@ -27,38 +27,6 @@ var (
 	schemaURLs map[string]string
 )
 
-// func init() {
-// 	facetDir := "../../spec/facets"
-// 	facetFiles, err := os.ReadDir(facetDir)
-// 	if err != nil {
-// 		panic("failed to read facet files")
-// 	}
-//
-// 	for _, f := range facetFiles {
-// 		if f.IsDir() || !strings.HasSuffix(f.Name(), ".json") {
-// 			continue
-// 		}
-// 		filepath := path.Join(facetDir, f.Name())
-// 		contents, err := os.ReadFile(filepath)
-// 		if err != nil {
-// 			panic(err)
-// 		}
-//
-// 		var data map[string]any
-// 		if err := json.Unmarshal(contents, &data); err != nil {
-// 			panic(err)
-// 		}
-//
-// 		id := data["$id"].(string)
-// 		defs := data["$defs"].(map[string]any)
-// 		for name := range defs {
-// 			if strings.HasSuffix(name, "facet") {
-// 				schemaURLs[name] = id
-// 			}
-// 		}
-// 	}
-// }
-
 type facetKind string
 
 const (

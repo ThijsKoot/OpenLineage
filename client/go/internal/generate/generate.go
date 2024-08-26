@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
 	"os"
+	"os/exec"
 )
 
 func main() {
@@ -36,6 +39,34 @@ func openLineage() error {
 	if _, err := file.WriteString(edited); err != nil {
 		return err
 	}
+
+	cmd := exec.Command(
+		"gorename",
+		"-from",
+		"\"github.com/ThijsKoot/openlineage/client/go/pkg/openlineage\".Run",
+		// "\"openlineage\"::Run",
+		"-to",
+		"RunInfo",
+	)
+	// cmd := exec.Cmd{
+	// 	// Path: "gorename",
+	// 	Path: "go",
+	// 	Args: []string{
+	// 		"run",
+	// 		"golang.org/x/tools/cmd/gorename",
+	// 	},
+	// }
+	//
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+
+	if err := cmd.Run(); err != nil {
+		fmt.Println(stderr.String())
+
+		return err
+	}
+
+	// "encoding/json"::x
 
 	return nil
 }

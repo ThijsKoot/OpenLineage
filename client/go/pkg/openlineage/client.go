@@ -52,7 +52,7 @@ func NewClient(cfg ClientConfig) (*Client, error) {
 
 type Client struct {
 	disabled  bool
-	transport Transport
+	transport transport.Transport
 	namespace string
 }
 
@@ -68,34 +68,57 @@ func (olc *Client) Emit(ctx context.Context, event Emittable) error {
 	return olc.transport.Emit(ctx, event.AsEmittable())
 }
 
-func (c *Client) NewRunContext(ctx context.Context, job string) (context.Context, RunContext) {
-	rctx := runContext{
+// NewRun creates a Run and sets it as the active Run in ctx.
+// If ctx already contains a RunContext, it set as the parent.
+func (c *Client) NewRun(ctx context.Context, job string) (context.Context, Run) {
+	r := run{
 		client:       c,
 		runID:        uuid.New(),
 		jobName:      job,
 		jobNamespace: c.namespace,
 	}
 
-	parent := RunContextFromContext(ctx)
-	if _, isNoop := parent.(*noopRunContext); !isNoop {
-		rctx.parent = parent
+	parent := RunFromContext(ctx)
+	if _, isNoop := parent.(*noopRun); !isNoop {
+		r.parent = parent
 	}
 
-	return ContextWithRun(ctx, &rctx), &rctx
+	return ContextWithRun(ctx, &r), &r
 }
 
-func (c *Client) ExistingRunContext(ctx context.Context, job string, runID uuid.UUID) (context.Context, RunContext) {
-	rctx := runContext{
+// StartRun calls NewRun and emits a START event.
+// For details, see NewRun.
+func (c *Client) StartRun(ctx context.Context, job string) (context.Context, Run) {
+	ctx, r := c.NewRun(ctx, job)
+
+	r.NewEvent(EventTypeStart).Emit()
+
+	return ctx, r
+}
+
+// ExistingRun recreates a Run for a given run ID.
+func (c *Client) ExistingRun(ctx context.Context, job string, runID uuid.UUID) (context.Context, Run) {
+	rctx := run{
 		client:       c,
 		runID:        runID,
 		jobName:      job,
 		jobNamespace: c.namespace,
 	}
 
-	parent := RunContextFromContext(ctx)
-	if _, isNoop := parent.(*noopRunContext); !isNoop {
-		rctx.parent = parent
-	}
-
 	return ContextWithRun(ctx, &rctx), &rctx
+}
+
+// NewRun calls DefaultClient.NewRun
+func NewRun(ctx context.Context, job string) (context.Context, Run) {
+	return DefaultClient.NewRun(ctx, job)
+}
+
+// NewRunContext calls DefaultClient.StartRun
+func StartRun(ctx context.Context, job string) (context.Context, Run) {
+	return DefaultClient.StartRun(ctx, job)
+}
+
+// NewRunContext calls DefaultClient.ExistingRun
+func ExistingRun(ctx context.Context, job string, runID uuid.UUID) (context.Context, Run) {
+	return DefaultClient.ExistingRun(ctx, job, runID)
 }
